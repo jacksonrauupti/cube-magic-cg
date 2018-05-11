@@ -5,14 +5,18 @@
 #include <math.h>
 
 
-// g++ main.cpp -lGL -lGLU -lglut
+#include "Directions.h"
+#include <string>
+using std::string;
+#include "Matrix.h"
 
+// g++ main.cpp -lGL -lGLU -lglut
 int position_x = -4;
 int position_y = 3;
 int position_z = -7;
 int control_space = 1; //controlador da tecla space
 
-float mat_color[5][5] ;
+float mat_color[5][5];
 
 float randomf() {
 	return ((float)rand())/RAND_MAX;
@@ -24,7 +28,6 @@ void set_color() {
 			mat_color[i][j] = randomf();
 		}
 	}
-
 }
 
 void nCubes(float x, float y, float z) {
@@ -200,18 +203,23 @@ void temporizador() {
 
 int main(int argc, char **argv) {
 
-	srand(time(NULL));
-	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
-	glutInitWindowSize(800, 800);
-	glutInitWindowPosition(100, 100);
-	glutCreateWindow("Cubo Mágico");
-	glutKeyboardFunc(funcaoKeyboard);
-	glutDisplayFunc(funcaoDisplay);
-	//glutIdleFunc(temporizador);
-	inicializacao();
+	Matrix m = Matrix(3, 0);
+	printf("%s", m.toString().c_str());
+	m.rotate(true);
+	printf("%s", m.toString().c_str());
 
-	glutMainLoop();
+	// srand(time(NULL));
+	// glutInit(&argc, argv);
+	// glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
+	// glutInitWindowSize(800, 800);
+	// glutInitWindowPosition(100, 100);
+	// glutCreateWindow("Cubo Mágico");
+	// glutKeyboardFunc(funcaoKeyboard);
+	// glutDisplayFunc(funcaoDisplay);
+	// //glutIdleFunc(temporizador);
+	// inicializacao();
+
+	// glutMainLoop();
 
 	return 0;
 }
