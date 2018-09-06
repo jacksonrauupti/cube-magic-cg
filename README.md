@@ -1,1 +1,1 @@
-# cube-magic-cg
+# Cubo Mágico 
