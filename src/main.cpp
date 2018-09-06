@@ -139,10 +139,30 @@ void funcaoDisplay() {
 
 void funcaoKeyboard(unsigned char key, int x, int y) {
 
-	if(key == 'q')
+	if(key == 'q') {
 		exit(-1);
-	if(key == 32) 
+	}
+	if(key == 32) { // tecla space
 		control_space *= -1;
+	}
+	if(key == 97) { //tecla a
+		position_x += 1;
+	} 
+	if(key == 100) { //tecla d
+		position_x -= 1;
+	} 
+	if(key == 119) { //tecla w
+		position_y += 1;
+	} 
+	if(key == 115) { //tecla s
+		position_y -= 1;
+	} 
+	if(key == 122) { //tecla z
+		position_z += 1;
+	} 
+	if(key == 101) { //tecla e
+		position_z -= 1;
+	} 
 
 	glutPostRedisplay();
 }
@@ -161,6 +181,8 @@ void temporizador() {
 
 		i = 0;
 	}
+
+	//funcaoKeyboard();
 
     glutPostRedisplay();
 
