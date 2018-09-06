@@ -146,10 +146,20 @@ void funcaoKeyboard(unsigned char key, int x, int y) {
 		control_space *= -1;
 	}
 	if(key == 97) { //tecla a
-		position_x += 1;
+		//position_x += 1;
+		if(position_x <= 30) {
+			position_x++;
+		} else {
+			position_x = -4;	
+		}
 	} 
 	if(key == 100) { //tecla d
-		position_x -= 1;
+		//position_x -= 1;
+		if(position_x >= -20) {
+			position_x--;
+		} else {
+			position_x = -4;	
+		}
 	} 
 	if(key == 119) { //tecla w
 		position_y += 1;
