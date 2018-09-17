@@ -207,31 +207,35 @@ void temporizador() {
 
 }
 
+// Função auxiliar para imprimir uma borda qualquer
+string edgeToString(int* edge, int size) {
+	string resultado = "";
+	for (int i = 0; i < size; ++i) {
+		resultado += to_string(edge[i]) + " ";
+	}
+	resultado += '\n';
+
+	return resultado;
+}
+
 int main(int argc, char **argv) {
 
+	// Cria um cubo de tamanho 2x2:
 	Cube c = Cube(2);
+
+	// Pega a face da frente e imprime as cores dela na tela:
 	Matrix* front = c.getFace(Directions::FRONT);
 	cout << front->toString() << endl;
 
-	for (int i = 0; i < 2; ++i) {
-		cout << front->getMatrix(Directions::LEFT)->getEdge(Directions::RIGHT)[i] << " ";
-	}
-	cout << endl;
+	// Também vou imprimir o parente de cima:
+	cout << front->getMatrix(Directions::UP)->toString() << endl;
 
-	for (int i = 0; i < 2; ++i) {
-		cout << front->getMatrix(Directions::UP)->getEdge(Directions::DOWN)[i] << " ";
-	}
-	cout << endl;
+	// Agora, vou imprimir a borda do parente de cima que está ligada à face front:
+	cout << edgeToString(front->getParentEdge(Directions::UP), front->getSize()) << endl;
 
-	for (int i = 0; i < 2; ++i) {
-		cout << front->getMatrix(Directions::RIGHT)->getEdge(Directions::LEFT)[i] << " ";
-	}
-	cout << endl;
-
-	for (int i = 0; i < 2; ++i) {
-		cout << front->getMatrix(Directions::UP)->getMatrix(Directions::RIGHT)->getEdge(Directions::LEFT)[i] << " ";
-	}
-	cout << endl;	
+	// Agora, vou rotacionar em sentido horário (por causa do true, se fosse false, era anti-horário) a face da frente, e imprimir novamente:
+	// front->rotate(true);
+	// cout << front->toString() << endl;
 
 	// srand(time(NULL));
 	// glutInit(&argc, argv);

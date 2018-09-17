@@ -24,11 +24,15 @@ void Matrix::rotate(bool clockwise) {
 	} else {
 		this->reverseColumns();
 	}
-	aux = this->getEdge(Directions::UP);
-	this->setEdge(this->getEdge(Directions::RIGHT), Directions::UP);
-	this->setEdge(this->getEdge(Directions::DOWN), Directions::RIGHT);
-	this->setEdge(this->getEdge(Directions::LEFT), Directions::DOWN);
-	this->setEdge(aux, Directions::LEFT);
+	aux = this->getParentEdge(Directions::UP);
+	// this->setEdge(this->getEdge(Directions::RIGHT), Directions::UP);
+	// this->setEdge(this->getEdge(Directions::DOWN), Directions::RIGHT);
+	// this->setEdge(this->getEdge(Directions::LEFT), Directions::DOWN);
+	// this->setEdge(aux, Directions::LEFT);
+}
+
+int Matrix::getSize() {
+	return this->size;
 }
 
 /**
@@ -36,7 +40,7 @@ void Matrix::rotate(bool clockwise) {
  * da matriz adicionada está virada para r
  * */
 void Matrix::setMatrix(Matrix* m, Directions d, Directions r) {
-	this->parents[d].d = d;
+	this->parents[d].d = r;
 	this->parents[d].m = m;
 }
 
@@ -64,7 +68,7 @@ void Matrix::reverseRows() {
 
 void Matrix::transpose() {
 	for(int i = 0; i < this->size; ++i) {
-		for (int j = 0; j < this->size; ++j) {
+		for (int j = i+1; j < this->size; ++j) {
 			int aux;
 			aux = this->squares[i][j];
 			this->squares[i][j] = this->squares[j][i];
