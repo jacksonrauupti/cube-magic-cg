@@ -1,10 +1,16 @@
 #ifndef __CUBE_H_INCLUDED__
 #define __CUBE_H_INCLUDED__
 
-class Cube {
-	constructor();
+#include "Matrix.h"
+#include "Colors.h"
 
-	
-}
+class Cube {
+	public:
+		Cube(int size);
+		Matrix* getFace(Directions d);
+	private:
+		Matrix* faces[6];
+		int size;
+};
 
 #endif

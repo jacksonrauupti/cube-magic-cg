@@ -13,17 +13,21 @@ class Matrix {
 		void rotate(bool clockwise);
 		string toString();
 		int* getEdge(Directions d);
-		Matrix* getParent(Directions d);
+		int* getParentEdge(Directions d);
+		void setEdge(int* edge, Directions d);
+		void setMatrix(Matrix* m, Directions d, Directions r);
+		Matrix* getMatrix(Directions d);
 	private:
 		void transpose();
 		void reverseRows();
 		void reverseColumns();
+		Directions getRealD(Directions r, Directions d);
 		int size;
 		int** squares;
-		Matrix* up;
-		Matrix* down;
-		Matrix* left;
-		Matrix* right;
+		struct DMatrix {
+			Matrix* m;
+			Directions d;
+		} parents[4];
 };
 
 #endif

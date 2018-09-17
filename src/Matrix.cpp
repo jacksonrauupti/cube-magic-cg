@@ -3,10 +3,11 @@
 Matrix::Matrix(int size, int color) {
 	this->size = size;
 	this->squares = new int*[size];
+	int count = 0;
 	for (int i = 0; i < this->size; ++i) {
 		this->squares[i] = new int[size];
 		for (int j = 0; j < this->size; ++j) {
-			this->squares[i][j] = i+j;
+			this->squares[i][j] = ++count;
 		}
 	}
 }
@@ -17,12 +18,26 @@ Matrix::~Matrix() {
 
 void Matrix::rotate(bool clockwise) {
 	this->transpose();
-	int* aux = new [this->size];
+	int *aux;
 	if (clockwise) {
 		this->reverseRows();
 	} else {
 		this->reverseColumns();
 	}
+	aux = this->getEdge(Directions::UP);
+	this->setEdge(this->getEdge(Directions::RIGHT), Directions::UP);
+	this->setEdge(this->getEdge(Directions::DOWN), Directions::RIGHT);
+	this->setEdge(this->getEdge(Directions::LEFT), Directions::DOWN);
+	this->setEdge(aux, Directions::LEFT);
+}
+
+/**
+ * Adiciona a Matrix m à matriz atual, na posição d, levando em consideração q a parte de cima
+ * da matriz adicionada está virada para r
+ * */
+void Matrix::setMatrix(Matrix* m, Directions d, Directions r) {
+	this->parents[d].d = d;
+	this->parents[d].m = m;
 }
 
 void Matrix::reverseColumns() {
@@ -70,19 +85,66 @@ string Matrix::toString() {
 	return result;
 }
 
-Matrix* Matrix::getParent(Directions d) {
+Matrix* Matrix::getMatrix(Directions d) {
+	return this->parents[d].m;
+}
+
+int* Matrix::getEdge(Directions d) {
+	int* edge = new int[this->size];
 	switch(d) {
 		case Directions::UP:
-			return this->up;
+			for (int i = 0; i < this->size; ++i) {
+				edge[i] = this->squares[0][i];
+			}
 			break;
+
 		case Directions::DOWN:
-			return this->down;
+			for (int i = 0; i < this->size; ++i) {
+				edge[i] = this->squares[this->size-1][i];
+			}
 			break;
+
 		case Directions::LEFT:
-			return this->left;
+			for (int i = 0; i < this->size; ++i) {
+				edge[i] = this->squares[i][0];
+			}
 			break;
 		case Directions::RIGHT:
-			return this->right;
+			for (int i = 0; i < this->size; ++i) {
+				edge[i] = this->squares[i][this->size-1];
+			}
+			break;
+	}
+	return edge;
+}
+
+int* Matrix::getParentEdge(Directions d) {
+	return this->parents[d].m->getEdge(this->parents[d].d);
+}
+
+void Matrix::setEdge(int* edge, Directions d) {
+	switch(d) {
+		case Directions::UP:
+			for (int i = 0; i < this->size; ++i) {
+				this->squares[0][i] = edge[i];
+			}
+			break;
+
+		case Directions::DOWN:
+			for (int i = 0; i < this->size; ++i) {
+				this->squares[this->size-1][i] = edge[i];
+			}
+			break;
+
+		case Directions::LEFT:
+			for (int i = 0; i < this->size; ++i) {
+				this->squares[i][0] = edge[i];
+			}
+			break;
+		case Directions::RIGHT:
+			for (int i = 0; i < this->size; ++i) {
+				this->squares[i][this->size-1] = edge[i];
+			}
 			break;
 	}
 }

@@ -6,9 +6,15 @@
 
 
 #include "Directions.h"
+#include "Colors.h"
+#include "Cube.h"
 #include <string>
 using std::string;
 #include "Matrix.h"
+
+#include <iostream>
+using std::cout;
+using std::endl;
 
 // g++ main.cpp -lGL -lGLU -lglut
 int position_x = -4;
@@ -203,10 +209,29 @@ void temporizador() {
 
 int main(int argc, char **argv) {
 
-	Matrix m = Matrix(3, 0);
-	printf("%s", m.toString().c_str());
-	m.rotate(true);
-	printf("%s", m.toString().c_str());
+	Cube c = Cube(2);
+	Matrix* front = c.getFace(Directions::FRONT);
+	cout << front->toString() << endl;
+
+	for (int i = 0; i < 2; ++i) {
+		cout << front->getMatrix(Directions::LEFT)->getEdge(Directions::RIGHT)[i] << " ";
+	}
+	cout << endl;
+
+	for (int i = 0; i < 2; ++i) {
+		cout << front->getMatrix(Directions::UP)->getEdge(Directions::DOWN)[i] << " ";
+	}
+	cout << endl;
+
+	for (int i = 0; i < 2; ++i) {
+		cout << front->getMatrix(Directions::RIGHT)->getEdge(Directions::LEFT)[i] << " ";
+	}
+	cout << endl;
+
+	for (int i = 0; i < 2; ++i) {
+		cout << front->getMatrix(Directions::UP)->getMatrix(Directions::RIGHT)->getEdge(Directions::LEFT)[i] << " ";
+	}
+	cout << endl;
 
 	// srand(time(NULL));
 	// glutInit(&argc, argv);
