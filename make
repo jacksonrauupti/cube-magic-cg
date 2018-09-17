@@ -1,1 +1,1 @@
-g++ src/main.cpp src/Matrix.cpp src/Cube.cpp -o main -lGL -lGLU -lglut -g
+g++ src/main.cpp src/Matrix.cpp src/Cube.cpp -o main -lGL -lGLU -lglut -g -std=c++11

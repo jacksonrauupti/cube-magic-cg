@@ -231,7 +231,7 @@ int main(int argc, char **argv) {
 	for (int i = 0; i < 2; ++i) {
 		cout << front->getMatrix(Directions::UP)->getMatrix(Directions::RIGHT)->getEdge(Directions::LEFT)[i] << " ";
 	}
-	cout << endl;
+	cout << endl;	
 
 	// srand(time(NULL));
 	// glutInit(&argc, argv);
