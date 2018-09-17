@@ -225,17 +225,25 @@ int main(int argc, char **argv) {
 
 	// Pega a face da frente e imprime as cores dela na tela:
 	Matrix* front = c.getFace(Directions::FRONT);
-	cout << front->toString() << endl;
+	cout << "FRONT:" << endl << front->toString() << endl;
 
 	// Também vou imprimir o parente de cima:
-	cout << front->getMatrix(Directions::UP)->toString() << endl;
+	cout << "UP:" << endl << front->getMatrix(Directions::UP)->toString() << endl;
+	cout << "RIGHT:" << endl << front->getMatrix(Directions::RIGHT)->toString() << endl;
 
 	// Agora, vou imprimir a borda do parente de cima que está ligada à face front:
-	cout << edgeToString(front->getParentEdge(Directions::UP), front->getSize()) << endl;
+	cout 
+		<< "Borda do parente de cima q está conectada com o front:" << endl 
+		<< edgeToString(front->getParentEdge(Directions::UP), front->getSize()) << endl
+		<< "Borda do parente da direita q está conectada com o front:" << endl
+		<< edgeToString(front->getParentEdge(Directions::RIGHT), front->getSize()) << endl;
 
 	// Agora, vou rotacionar em sentido horário (por causa do true, se fosse false, era anti-horário) a face da frente, e imprimir novamente:
-	// front->rotate(true);
-	// cout << front->toString() << endl;
+	cout << "ROTACIONANDO FRONT NO SENTIDO HORARIO, A BORDA DE BAIXO DO UP DEVE IR PRA BORDA ESQUERDA DO RIGHT" << endl;
+	front->rotate(true);
+	cout << "FRONT:" << endl << front->toString() << endl;
+	cout << "UP:" << endl << front->getMatrix(Directions::UP)->toString() << endl;
+	cout << "RIGHT:" << endl << front->getMatrix(Directions::RIGHT)->toString() << endl;
 
 	// srand(time(NULL));
 	// glutInit(&argc, argv);

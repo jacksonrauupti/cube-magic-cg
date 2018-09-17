@@ -21,14 +21,19 @@ void Matrix::rotate(bool clockwise) {
 	int *aux;
 	if (clockwise) {
 		this->reverseRows();
+		aux = this->getParentEdge(Directions::UP);
+		this->setParentEdge(this->getParentEdge(Directions::LEFT), Directions::UP);
+		this->setParentEdge(this->getParentEdge(Directions::DOWN), Directions::LEFT);
+		this->setParentEdge(this->getParentEdge(Directions::RIGHT), Directions::DOWN);
+		this->setParentEdge(aux, Directions::RIGHT);
 	} else {
 		this->reverseColumns();
+		aux = this->getParentEdge(Directions::UP);
+		this->setParentEdge(this->getParentEdge(Directions::RIGHT), Directions::UP);
+		this->setParentEdge(this->getParentEdge(Directions::DOWN), Directions::RIGHT);
+		this->setParentEdge(this->getParentEdge(Directions::LEFT), Directions::DOWN);
+		this->setParentEdge(aux, Directions::LEFT);
 	}
-	aux = this->getParentEdge(Directions::UP);
-	// this->setEdge(this->getEdge(Directions::RIGHT), Directions::UP);
-	// this->setEdge(this->getEdge(Directions::DOWN), Directions::RIGHT);
-	// this->setEdge(this->getEdge(Directions::LEFT), Directions::DOWN);
-	// this->setEdge(aux, Directions::LEFT);
 }
 
 int Matrix::getSize() {
@@ -151,4 +156,9 @@ void Matrix::setEdge(int* edge, Directions d) {
 			}
 			break;
 	}
+}
+
+void Matrix::setParentEdge(int* edge, Directions d) {
+	Matrix* parent = this->parents[d].m;
+	parent->setEdge(edge, this->parents[d].d);
 }
