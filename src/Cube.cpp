@@ -51,3 +51,7 @@ Cube::Cube(int size) {
 Matrix* Cube::getFace(Directions d) {
 	return this->faces[d];
 }
+
+int Cube::getSize() {
+	return this->size;
+}

@@ -18,6 +18,7 @@ class Matrix {
 		void setParentEdge(int* edge, Directions d, bool inverse = false);
 		void setMatrix(Matrix* m, Directions d, Directions r);
 		Matrix* getMatrix(Directions d);
+		int** getSquares();
 		int getSize();
 	private:
 		void transpose();

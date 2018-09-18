@@ -4,7 +4,6 @@
 #include <time.h>
 #include <math.h>
 
-
 #include "Directions.h"
 #include "Colors.h"
 #include "Cube.h"
@@ -17,10 +16,12 @@ using std::cout;
 using std::endl;
 
 // g++ main.cpp -lGL -lGLU -lglut
-int position_x = -4;
-int position_y = 3;
-int position_z = -7;
+int position_x = 0;
+int position_y = -5;
+int position_z = 5;
 int control_space = 1; //controlador da tecla space
+bool control_orientation = true; //sentido horario
+Cube* cubo = new Cube(2);
 
 float mat_color[5][5];
 
@@ -36,37 +37,153 @@ void set_color() {
 	}
 }
 
-void nCubes(float x, float y, float z) {
-	glPushMatrix();	
-	for(int j=0; j < 9;j++) {
+void getColor3f(int color, float* a, float* b, float* c) {
+	
+	if(color == 0) { //WHITE
+		*a = 1.0;
+		*b = 1.0;
+		*c = 1.0; 
+	} else if(color == 1) { //ORANGE 
+		*a = 1.0;
+		*b = 0.65;
+		*c = 0.0;
+	} else if(color == 2) { //GREEN 
+		*a = 0.0;
+		*b = 1.0;
+		*c = 0.0; 
+	} else if(color == 3) { //RED 
+		*a = 1.0;
+		*b = 0.0;
+		*c = 0.0;
+	} else if(color == 4) { //YELLOW 
+		*a = 1.0;
+		*b = 1.0;
+		*c = 0.0;
+	} else if(color == 5) { //BLUE 
+		*a = 0.0;
+		*b = 0.0;
+		*c = 1.0; 
+	}  
+
+}
+
+// Definir as 6 cores das faces do cubo.
+void oneCube(int f, int back, int l, int r, int u, int d) {
+	
+	float a, b, c;
+
+	getColor3f(3, &a, &b, &c);
+	glColor3f(a, b, c);
+	glBegin(GL_POLYGON);
+	glVertex3f(-0.500000, -0.500000, 0.500000);
+	glVertex3f(0.500000, -0.500000, 0.500000);
+	glVertex3f(0.500000, 0.500000, 0.500000);
+	glVertex3f(-0.500000, 0.500000, 0.500000);
+	glEnd();
+
+	getColor3f(3, &a, &b, &c);
+	glColor3f(a, b, c);
+	glBegin(GL_POLYGON);
+	glVertex3f(-0.500000, 0.500000, 0.500000);
+	glVertex3f(0.500000, 0.500000, 0.500000);
+	glVertex3f(0.500000, 0.500000, -0.500000);
+	glVertex3f(-0.500000, -0.500000, -0.500000);
+	glEnd();
+
+	getColor3f(1, &a, &b, &c);
+	glColor3f(a, b, c);
+	glBegin(GL_POLYGON);
+	glVertex3f(-0.500000, 0.500000, -0.500000);
+	glVertex3f(0.500000, 0.500000, -0.500000);
+	glVertex3f(0.500000, -0.500000, -0.500000);
+	glVertex3f(-0.500000, -0.500000, -0.500000);
+	glEnd();
+
+	getColor3f(1, &a, &b, &c);
+	glColor3f(a, b, c);
+	glBegin(GL_POLYGON);
+	glVertex3f(-0.500000, -0.500000, -0.500000);
+	glVertex3f(0.500000, -0.500000, -0.500000);
+	glVertex3f(0.500000, -0.500000, 0.500000);
+	glVertex3f(-0.500000, -0.500000, 0.500000);
+	glEnd();
+
+	getColor3f(1, &a, &b, &c);
+	glColor3f(a, b, c);
+	glBegin(GL_POLYGON);
+	glVertex3f(0.500000, -0.500000, 0.500000);
+	glVertex3f(0.500000, -0.500000, -0.500000);
+	glVertex3f(0.500000, 0.500000, -0.500000);
+	glVertex3f(0.500000, 0.500000, 0.500000);
+	glEnd();
+
+	getColor3f(1, &a, &b, &c);
+	glColor3f(a, b, c);
+	glBegin(GL_POLYGON);
+	glVertex3f(-0.500000, -0.500000,-0.500000);
+	glVertex3f(-0.500000, -0.500000, 0.500000);
+	glVertex3f(-0.500000, 0.500000, 0.500000);
+	glVertex3f(-0.500000, 0.500000, -0.500000);
+	glEnd();
+}
+
+void oneFace(Matrix* m) {
+//void oneFace() {
+	
+	float a, b, c;
+	glPushMatrix();
+	for (int i = 0; i < m->getSize(); ++i)
+	{
 		glPushMatrix();
-		float a = 3.0;
+		for (int j = 0; j < m->getSize(); ++j){
+			getColor3f(m->getSquares()[i][j], &a, &b, &c);
+			glColor3f(a, b, c);	
+			glBegin(GL_POLYGON);
+			glVertex3f(0.0, 0.0, 0.0);
+			glVertex3f(0.0, 0.5, 0.0);
+			glVertex3f(0.5, 0.5, 0.0);
+			glVertex3f(0.5, 0.0, 0.0);
+			glEnd();
 
-		for(int i = 0; i < 3; i++) {
-			//glutWireCube(1.0);	
-			//glColor3f(0,0,mat_color[j][i]);
-			glutSolidCube(1.0);
-			a = 3.0 * mat_color[j][i];
-			
-			if(a < 1.0 ) {a = 1.0; }
-			if(a > 5.0) {a = 4.0; }
-
-			glScalef(1.0, 1.0, 1.0);
-			glTranslatef(2.7, 0, 0);	
-			glColor3f(mat_color[j][i], mat_color[j][j],mat_color[i][i]);
+			glTranslatef(0.5, 0.0, 0.0);
 		}
-
-		//glutWireCube(1.0);	
-		//glColor3f(mat_color[j][i],mat_color[j][i],mat_color[j][i]);
-		//glColor3f(0.0, 1.0, 0.0);
-		glutSolidCube(1.0);	
-		glScalef(1.0, 1.0, 1.0);
 		glPopMatrix();
-		glTranslatef(0, 0, 2.7);
-	}
+		glTranslatef(0.0, 0.5, 0.0);
 
+	}
+	glPopMatrix();
+}
+
+void nCubes(int dimension) {
+	glPushMatrix();	
+	
+	// Primeira camada.
+	oneCube(0,0,0,0,0,0);
+	glTranslatef(1.0,0.0,0.0);	
+	oneCube(0,0,0,0,0,0);	
 	glPopMatrix();
 
+	glTranslatef(0.0,0.0,1.0);
+	oneCube(0,0,0,0,0,0);	
+	glTranslatef(1.0,0.0,0.0);
+	oneCube(0,0,0,0,0,0);
+	glPopMatrix();	
+    
+	// Segunda camada. 
+	glTranslatef(0.0,1.0,0.0);	
+	oneCube(0,0,0,0,0,0);
+	
+	glTranslatef(-1.0,0.0,0.0);	
+	oneCube(0,0,0,0,0,0);	
+	glPopMatrix();
+
+	glTranslatef(0.0,0.0,-1.0);	
+	oneCube(0,0,0,0,0,0);	
+
+	glTranslatef(1.0,0.0, 0.0);	
+	oneCube(0,0,0,0,0,0);	
+	glPopMatrix();
+	
 }
 
 void inicializacao() {
@@ -83,8 +200,7 @@ void inicializacao() {
    	glTranslatef(0, 0, 0);
    	glScalef(1.0, 1.0, 1);
    	glutWireCube(1.0);
-
-   	
+  	
 }
 
 void printModelView() {
@@ -132,13 +248,28 @@ void funcaoDisplay() {
 
 	//altere gluLookAt para movimentar a camera ao redor da cidade
 	//gluLookAt(-4, 3, -4, 0, 0, 0, 0, 1, 0);
-	gluLookAt( position_x, position_y, position_z, 3.5, 1, 1, 0, 1, 0);
+	gluLookAt( position_x, position_y, position_z, 0.0, 0.0, 0.0, 0, 1, 0);
 	
 	glColor3f(0, 0, 0);
-	//desenhar um grid de cubos esticados verticalmente 
-	glutWireCube(1.0);
 	
-	nCubes(1.2, 0, 0); // desenhar grid de cubos.
+	//nCubes(2); // desenhar grid de cubos.
+	//oneCube(0,0,0,0,0,0);
+
+	oneFace(cubo->getFace(Directions::LEFT));
+	glTranslatef(cubo->getSize()*0.5, 0.0, 0.0);
+	oneFace(cubo->getFace(Directions::FRONT));
+	glPushMatrix();
+	glTranslatef(0.0, cubo->getSize()*(-0.5), 0.0);
+	oneFace(cubo->getFace(Directions::DOWN));
+	glPopMatrix();
+	glPushMatrix();
+	glTranslatef(0.0, cubo->getSize()*0.5, 0.0);
+	oneFace(cubo->getFace(Directions::UP));
+	glPopMatrix();
+	glTranslatef(cubo->getSize()*0.5, 0.0, 0.0);
+	oneFace(cubo->getFace(Directions::RIGHT));
+	glTranslatef(cubo->getSize()*0.5, 0.0, 0.0);
+	oneFace(cubo->getFace(Directions::BACK));
 
 	glFlush();
 
@@ -154,6 +285,9 @@ void funcaoKeyboard(unsigned char key, int x, int y) {
 	if(key == 32) { // tecla space
 		control_space *= -1;
 	}
+	if(key == 111) { // tecla o
+		control_orientation = !control_orientation;
+	}
 	if(key == 97) { //tecla a
 		//position_x += 1;
 		if(position_x <= 30) {
@@ -162,7 +296,7 @@ void funcaoKeyboard(unsigned char key, int x, int y) {
 			position_x = -4;	
 		}
 	} 
-	if(key == 100) { //tecla d
+	if(key == 120) { //tecla x
 		//position_x -= 1;
 		if(position_x >= -20) {
 			position_x--;
@@ -181,6 +315,27 @@ void funcaoKeyboard(unsigned char key, int x, int y) {
 	} 
 	if(key == 101) { //tecla e
 		position_z -= 1;
+	} 
+	// Movimentações das faces.
+	if(key == 108) { //tecla l
+		cubo->getFace(Directions::LEFT)->rotate(control_orientation);
+	} 
+	if(key == 102) { //tecla f
+		//cout << cubo->getFace(Directions::UP)->toString();
+		cubo->getFace(Directions::FRONT)->rotate(control_orientation);	
+		//cout << cubo->getFace(Directions::UP)->toString();
+	} 
+	if(key == 100) { //tecla d
+		cubo->getFace(Directions::DOWN)->rotate(control_orientation);
+	} 
+	if(key == 117) { //tecla u
+		cubo->getFace(Directions::UP)->rotate(control_orientation);
+	} 
+	if(key == 114) { //tecla r
+		cubo->getFace(Directions::RIGHT)->rotate(control_orientation);
+	} 
+	if(key == 98) { //tecla b
+		cubo->getFace(Directions::BACK)->rotate(control_orientation);
 	} 
 
 	glutPostRedisplay();
@@ -245,18 +400,18 @@ int main(int argc, char **argv) {
 	cout << "UP:" << endl << front->getMatrix(Directions::UP)->toString() << endl;
 	cout << "RIGHT:" << endl << front->getMatrix(Directions::RIGHT)->toString() << endl;
 
-	// srand(time(NULL));
-	// glutInit(&argc, argv);
-	// glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
-	// glutInitWindowSize(800, 800);
-	// glutInitWindowPosition(100, 100);
-	// glutCreateWindow("Cubo Mágico");
-	// glutKeyboardFunc(funcaoKeyboard);
-	// glutDisplayFunc(funcaoDisplay);
-	// //glutIdleFunc(temporizador);
-	// inicializacao();
+	srand(time(NULL));
+	glutInit(&argc, argv);
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
+	glutInitWindowSize(800, 800);
+	glutInitWindowPosition(100, 100);
+	glutCreateWindow("Cubo Mágico");
+	glutKeyboardFunc(funcaoKeyboard);
+	glutDisplayFunc(funcaoDisplay);
+	glutIdleFunc(temporizador);
+	inicializacao();
 
-	// glutMainLoop();
+	glutMainLoop();
 
 	return 0;
 }
