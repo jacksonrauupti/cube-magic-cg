@@ -21,7 +21,7 @@ int position_y = -5;
 int position_z = 5;
 int control_space = 1; //controlador da tecla space
 bool control_orientation = true; //sentido horario
-Cube* cubo = new Cube(2);
+Cube* cubo = new Cube(3);
 
 float mat_color[5][5];
 
@@ -189,11 +189,19 @@ void nCubes(int dimension) {
 void inicializacao() {
 	//cor de fundo eh cinza
 	glClearColor(0.8, 0.8, 0.8, 0.8);
-	set_color(); // definir cores dos cubos
+	// set_color(); // definir cores dos cubos
+
+	glEnable(GL_DEPTH_TEST);
 
 	glMatrixMode(GL_PROJECTION);
 	//alterne e altere as projecoes para alcancar os resultados desejados
-	glFrustum(-2, 2, -1, 1, 1.5, 20.0);
+	gluPerspective( /* field of view in degree */ 40.0,
+    /* aspect ratio */ 1.0,
+    /* Z near */ 1.0, /* Z far */ 20.0);
+	glMatrixMode(GL_MODELVIEW);
+	gluLookAt(0.0, 5.0, 5.0,  /* eye is at (0,0,5) */
+		0.0, 0.0, 0.0,      /* center is at (0,0,0) */
+		0.0, 1.0, 0.);      /* up is in positive Y direction */
 
 	glPushMatrix();
 
@@ -235,13 +243,13 @@ void printProjection() {
 
 void funcaoDisplay() {
 	//mensagem para verificar quando esta funcao eh chamada
-	system("clear");
-	printf("display\n");
-	printModelView();
-	printProjection();
+	// system("clear");
+	// printf("display\n");
+	// printModelView();
+	// printProjection();
 
 	//limpa a tela com a cor de fundo
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -256,22 +264,32 @@ void funcaoDisplay() {
 	//oneCube(0,0,0,0,0,0);
 
 	oneFace(cubo->getFace(Directions::LEFT));
+
 	glTranslatef(cubo->getSize()*0.5, 0.0, 0.0);
+	glRotatef(90, 0, 1, 0);
 	oneFace(cubo->getFace(Directions::FRONT));
+
 	glPushMatrix();
-	glTranslatef(0.0, cubo->getSize()*(-0.5), 0.0);
+	// glTranslatef(0.0, cubo->getSize()*(-0.5), 0.0);
+	glRotatef(-90, 1, 0, 0);
 	oneFace(cubo->getFace(Directions::DOWN));
 	glPopMatrix();
+
 	glPushMatrix();
 	glTranslatef(0.0, cubo->getSize()*0.5, 0.0);
+	glRotatef(-90, 1, 0, 0);
 	oneFace(cubo->getFace(Directions::UP));
 	glPopMatrix();
+
 	glTranslatef(cubo->getSize()*0.5, 0.0, 0.0);
+	glRotatef(90, 0, 1, 0);
 	oneFace(cubo->getFace(Directions::RIGHT));
+
 	glTranslatef(cubo->getSize()*0.5, 0.0, 0.0);
+	glRotatef(90, 0, 1, 0);
 	oneFace(cubo->getFace(Directions::BACK));
 
-	glFlush();
+	// glFlush();
 
 	glutSwapBuffers();
 
@@ -375,31 +393,6 @@ string edgeToString(int* edge, int size) {
 
 int main(int argc, char **argv) {
 
-	// Cria um cubo de tamanho 2x2:
-	Cube c = Cube(2);
-
-	// Pega a face da frente e imprime as cores dela na tela:
-	Matrix* front = c.getFace(Directions::FRONT);
-	cout << "FRONT:" << endl << front->toString() << endl;
-
-	// Também vou imprimir o parente de cima:
-	cout << "UP:" << endl << front->getMatrix(Directions::UP)->toString() << endl;
-	cout << "RIGHT:" << endl << front->getMatrix(Directions::RIGHT)->toString() << endl;
-
-	// Agora, vou imprimir a borda do parente de cima que está ligada à face front:
-	cout 
-		<< "Borda do parente de cima q está conectada com o front:" << endl 
-		<< edgeToString(front->getParentEdge(Directions::UP), front->getSize()) << endl
-		<< "Borda do parente da direita q está conectada com o front:" << endl
-		<< edgeToString(front->getParentEdge(Directions::RIGHT), front->getSize()) << endl;
-
-	// Agora, vou rotacionar em sentido horário (por causa do true, se fosse false, era anti-horário) a face da frente, e imprimir novamente:
-	cout << "ROTACIONANDO FRONT NO SENTIDO HORARIO, A BORDA DE BAIXO DO UP DEVE IR PRA BORDA ESQUERDA DO RIGHT" << endl;
-	front->rotate(true);
-	cout << "FRONT:" << endl << front->toString() << endl;
-	cout << "UP:" << endl << front->getMatrix(Directions::UP)->toString() << endl;
-	cout << "RIGHT:" << endl << front->getMatrix(Directions::RIGHT)->toString() << endl;
-
 	srand(time(NULL));
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
@@ -410,7 +403,6 @@ int main(int argc, char **argv) {
 	glutDisplayFunc(funcaoDisplay);
 	glutIdleFunc(temporizador);
 	inicializacao();
-
 	glutMainLoop();
 
 	return 0;
