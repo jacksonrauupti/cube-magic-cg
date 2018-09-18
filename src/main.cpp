@@ -344,10 +344,10 @@ void funcaoKeyboard(unsigned char key, int x, int y) {
 		//cout << cubo->getFace(Directions::UP)->toString();
 	} 
 	if(key == 100) { //tecla d
-		cubo->getFace(Directions::DOWN)->rotate(control_orientation);
+		cubo->getFace(Directions::UP)->rotate(control_orientation);
 	} 
 	if(key == 117) { //tecla u
-		cubo->getFace(Directions::UP)->rotate(control_orientation);
+		cubo->getFace(Directions::DOWN)->rotate(!control_orientation);
 	} 
 	if(key == 114) { //tecla r
 		cubo->getFace(Directions::RIGHT)->rotate(control_orientation);
