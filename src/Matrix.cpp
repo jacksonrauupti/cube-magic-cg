@@ -22,17 +22,17 @@ void Matrix::rotate(bool clockwise) {
 	if (clockwise) {
 		this->reverseRows();
 		aux = this->getParentEdge(Directions::UP);
-		this->setParentEdge(this->getParentEdge(Directions::LEFT), Directions::UP);
+		this->setParentEdge(this->getParentEdge(Directions::LEFT), Directions::UP, true);
 		this->setParentEdge(this->getParentEdge(Directions::DOWN), Directions::LEFT);
-		this->setParentEdge(this->getParentEdge(Directions::RIGHT), Directions::DOWN);
+		this->setParentEdge(this->getParentEdge(Directions::RIGHT), Directions::DOWN, true);
 		this->setParentEdge(aux, Directions::RIGHT);
 	} else {
 		this->reverseColumns();
 		aux = this->getParentEdge(Directions::UP);
 		this->setParentEdge(this->getParentEdge(Directions::RIGHT), Directions::UP);
-		this->setParentEdge(this->getParentEdge(Directions::DOWN), Directions::RIGHT);
+		this->setParentEdge(this->getParentEdge(Directions::DOWN), Directions::RIGHT, true);
 		this->setParentEdge(this->getParentEdge(Directions::LEFT), Directions::DOWN);
-		this->setParentEdge(aux, Directions::LEFT);
+		this->setParentEdge(aux, Directions::LEFT, true);
 	}
 }
 
@@ -131,34 +131,34 @@ int* Matrix::getParentEdge(Directions d) {
 	return this->parents[d].m->getEdge(this->parents[d].d);
 }
 
-void Matrix::setEdge(int* edge, Directions d) {
+void Matrix::setEdge(int* edge, Directions d, bool inverse) {
 	switch(d) {
 		case Directions::UP:
 			for (int i = 0; i < this->size; ++i) {
-				this->squares[0][i] = edge[i];
+				this->squares[0][i] = edge[inverse ? this->size - i - 1 : i];
 			}
 			break;
 
 		case Directions::DOWN:
 			for (int i = 0; i < this->size; ++i) {
-				this->squares[this->size-1][i] = edge[i];
+				this->squares[this->size-1][i] = edge[inverse ? this->size - i - 1 : i];
 			}
 			break;
 
 		case Directions::LEFT:
 			for (int i = 0; i < this->size; ++i) {
-				this->squares[i][0] = edge[i];
+				this->squares[i][0] = edge[inverse ? this->size - i - 1 : i];
 			}
 			break;
 		case Directions::RIGHT:
 			for (int i = 0; i < this->size; ++i) {
-				this->squares[i][this->size-1] = edge[i];
+				this->squares[i][this->size-1] = edge[inverse ? this->size - i - 1 : i];
 			}
 			break;
 	}
 }
 
-void Matrix::setParentEdge(int* edge, Directions d) {
+void Matrix::setParentEdge(int* edge, Directions d, bool inverse) {
 	Matrix* parent = this->parents[d].m;
-	parent->setEdge(edge, this->parents[d].d);
+	parent->setEdge(edge, this->parents[d].d, inverse);
 }

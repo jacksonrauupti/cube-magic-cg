@@ -12,10 +12,10 @@ class Matrix {
 		~Matrix();
 		void rotate(bool clockwise);
 		string toString();
-		void setEdge(int* edge, Directions d);
+		void setEdge(int* edge, Directions d, bool inverse = false);
 		int* getEdge(Directions d);
 		int* getParentEdge(Directions d);
-		void setParentEdge(int* edge, Directions d);
+		void setParentEdge(int* edge, Directions d, bool inverse = false);
 		void setMatrix(Matrix* m, Directions d, Directions r);
 		Matrix* getMatrix(Directions d);
 		int getSize();
