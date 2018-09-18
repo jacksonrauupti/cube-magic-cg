@@ -21,7 +21,7 @@ int position_y = -5;
 int position_z = 5;
 int control_space = 1; //controlador da tecla space
 bool control_orientation = true; //sentido horario
-Cube* cubo = new Cube(2);
+Cube* cubo = new Cube(3);
 
 float mat_color[5][5];
 
@@ -256,19 +256,29 @@ void funcaoDisplay() {
 	//oneCube(0,0,0,0,0,0);
 
 	oneFace(cubo->getFace(Directions::LEFT));
+
 	glTranslatef(cubo->getSize()*0.5, 0.0, 0.0);
+	glRotatef(90,0,1,0);
 	oneFace(cubo->getFace(Directions::FRONT));
+	
 	glPushMatrix();
-	glTranslatef(0.0, cubo->getSize()*(-0.5), 0.0);
+	//glTranslatef(0.0, cubo->getSize()*(-0.5), 0.0);
+	glRotatef(-90,1,0,0);
 	oneFace(cubo->getFace(Directions::DOWN));
 	glPopMatrix();
+	
 	glPushMatrix();
 	glTranslatef(0.0, cubo->getSize()*0.5, 0.0);
+	glRotatef(-90,1,0,0);
 	oneFace(cubo->getFace(Directions::UP));
 	glPopMatrix();
+	
 	glTranslatef(cubo->getSize()*0.5, 0.0, 0.0);
+	glRotatef(90,0,1,0);
 	oneFace(cubo->getFace(Directions::RIGHT));
+	
 	glTranslatef(cubo->getSize()*0.5, 0.0, 0.0);
+	glRotatef(90,0,1,0);
 	oneFace(cubo->getFace(Directions::BACK));
 
 	glFlush();
