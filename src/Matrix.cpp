@@ -3,11 +3,11 @@
 Matrix::Matrix(int size, int color) {
 	this->size = size;
 	this->squares = new int*[size];
-	int count = 0;
+	//int count = 0;
 	for (int i = 0; i < this->size; ++i) {
 		this->squares[i] = new int[size];
 		for (int j = 0; j < this->size; ++j) {
-			this->squares[i][j] = ++count;
+			this->squares[i][j] = color;
 		}
 	}
 }
@@ -147,4 +147,12 @@ void Matrix::setEdge(int* edge, Directions d) {
 			}
 			break;
 	}
+}
+
+int** Matrix::getSquares() {
+	return this->squares;
+}
+
+int Matrix::getSize() {
+	return this->size;
 }

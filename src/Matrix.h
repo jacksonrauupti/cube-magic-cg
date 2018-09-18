@@ -17,6 +17,8 @@ class Matrix {
 		void setEdge(int* edge, Directions d);
 		void setMatrix(Matrix* m, Directions d, Directions r);
 		Matrix* getMatrix(Directions d);
+		int** getSquares();
+		int getSize();
 	private:
 		void transpose();
 		void reverseRows();
