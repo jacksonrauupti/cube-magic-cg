@@ -340,7 +340,7 @@ void funcaoKeyboard(unsigned char key, int x, int y) {
 	} 
 	if(key == 102) { //tecla f
 		//cout << cubo->getFace(Directions::UP)->toString();
-		cubo->getFace(Directions::FRONT)->rotate(control_orientation);	
+		cubo->getFace(Directions::BACK)->rotate(!control_orientation);	
 		//cout << cubo->getFace(Directions::UP)->toString();
 	} 
 	if(key == 100) { //tecla d
@@ -353,7 +353,7 @@ void funcaoKeyboard(unsigned char key, int x, int y) {
 		cubo->getFace(Directions::RIGHT)->rotate(control_orientation);
 	} 
 	if(key == 98) { //tecla b
-		cubo->getFace(Directions::BACK)->rotate(control_orientation);
+		cubo->getFace(Directions::FRONT)->rotate(control_orientation);
 	} 
 
 	glutPostRedisplay();
