@@ -15,12 +15,13 @@ using std::string;
 using std::cout;
 using std::endl;
 
-// g++ main.cpp -lGL -lGLU -lglut
 int position_x = 0;
 int position_y = -5;
 int position_z = 5;
 int control_space = 1; //controlador da tecla space
 bool control_orientation = true; //sentido horario
+bool control_3d = false; //visualização do cubo 3d ou 2d.
+
 Cube* cubo = new Cube(3);
 
 float mat_color[5][5];
@@ -254,8 +255,7 @@ void funcaoDisplay() {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	//altere gluLookAt para movimentar a camera ao redor da cidade
-	//gluLookAt(-4, 3, -4, 0, 0, 0, 0, 1, 0);
+	//altere gluLookAt para movimentar a camera ao redor do cubo.
 	gluLookAt( position_x, position_y, position_z, 0.0, 0.0, 0.0, 0, 1, 0);
 	
 	glColor3f(0, 0, 0);
@@ -266,30 +266,34 @@ void funcaoDisplay() {
 	oneFace(cubo->getFace(Directions::LEFT));
 
 	glTranslatef(cubo->getSize()*0.5, 0.0, 0.0);
-	glRotatef(90, 0, 1, 0);
+	if(control_3d) 
+		glRotatef(90, 0, 1, 0);
 	oneFace(cubo->getFace(Directions::FRONT));
 
 	glPushMatrix();
-	// glTranslatef(0.0, cubo->getSize()*(-0.5), 0.0);
-	glRotatef(-90, 1, 0, 0);
+	if(!control_3d)
+		glTranslatef(0.0, cubo->getSize()*(-0.5), 0.0);
+	if(control_3d) 
+		glRotatef(-90, 1, 0, 0);
 	oneFace(cubo->getFace(Directions::DOWN));
 	glPopMatrix();
 
 	glPushMatrix();
 	glTranslatef(0.0, cubo->getSize()*0.5, 0.0);
-	glRotatef(-90, 1, 0, 0);
+	if(control_3d) 
+		glRotatef(-90, 1, 0, 0);
 	oneFace(cubo->getFace(Directions::UP));
 	glPopMatrix();
 
 	glTranslatef(cubo->getSize()*0.5, 0.0, 0.0);
-	glRotatef(90, 0, 1, 0);
+	if(control_3d) 
+		glRotatef(90, 0, 1, 0);
 	oneFace(cubo->getFace(Directions::RIGHT));
 
 	glTranslatef(cubo->getSize()*0.5, 0.0, 0.0);
-	glRotatef(90, 0, 1, 0);
+	if(control_3d) 	
+		glRotatef(90, 0, 1, 0);
 	oneFace(cubo->getFace(Directions::BACK));
-
-	// glFlush();
 
 	glutSwapBuffers();
 
@@ -300,12 +304,15 @@ void funcaoKeyboard(unsigned char key, int x, int y) {
 	if(key == 'q') {
 		exit(-1);
 	}
-	if(key == 32) { // tecla space
+	if(key == 32) { // tecla space: pausar rotação automática da câmera.
 		control_space *= -1;
 	}
-	if(key == 111) { // tecla o
+	if(key == 111) { // tecla o: altera orientação das rotações.
 		control_orientation = !control_orientation;
 	}
+
+	// Comandos referentes a movimentação da câmera
+
 	if(key == 97) { //tecla a
 		//position_x += 1;
 		if(position_x <= 30) {
@@ -334,7 +341,9 @@ void funcaoKeyboard(unsigned char key, int x, int y) {
 	if(key == 101) { //tecla e
 		position_z -= 1;
 	} 
-	// Movimentações das faces.
+
+	// Comando referentes as movimentações das faces.
+
 	if(key == 108) { //tecla l
 		cubo->getFace(Directions::LEFT)->rotate(control_orientation);
 	} 
@@ -355,6 +364,9 @@ void funcaoKeyboard(unsigned char key, int x, int y) {
 	if(key == 98) { //tecla b
 		cubo->getFace(Directions::FRONT)->rotate(control_orientation);
 	} 
+	if(key == 118) { //tecla v : visualização 3d ou 2d
+		control_3d = !control_3d;
+	} 
 
 	glutPostRedisplay();
 }
@@ -373,8 +385,6 @@ void temporizador() {
 
 		i = 0;
 	}
-
-	//funcaoKeyboard();
 
     glutPostRedisplay();
 
