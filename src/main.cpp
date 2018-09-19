@@ -18,7 +18,9 @@ using std::endl;
 int position_x = 0;
 int position_y = -5;
 int position_z = 5;
-int control_space = 1; //controlador da tecla space
+int num_movements = 0; //número de movimentos
+
+bool control_space = true; //controlador da tecla space
 bool control_orientation = true; //sentido horario
 bool control_3d = false; //visualização do cubo 3d ou 2d.
 
@@ -305,10 +307,20 @@ void funcaoKeyboard(unsigned char key, int x, int y) {
 		exit(-1);
 	}
 	if(key == 32) { // tecla space: pausar rotação automática da câmera.
-		control_space *= -1;
+		control_space = !control_space;
+		if(!control_space)
+			cout << "= Rotação pausada =" <<endl;
+		else
+			cout << "= Rotação automática =" <<endl;
 	}
 	if(key == 111) { // tecla o: altera orientação das rotações.
 		control_orientation = !control_orientation;
+		if (!control_orientation) {
+			cout << "= Sentido anti-horário =" <<endl;
+		} else {
+			cout << "= Sentido horário =" <<endl;
+		}
+		
 	}
 
 	// Comandos referentes a movimentação da câmera
@@ -342,31 +354,41 @@ void funcaoKeyboard(unsigned char key, int x, int y) {
 		position_z -= 1;
 	} 
 
-	// Comando referentes as movimentações das faces.
+	// Comandos referentes as movimentações das faces.
 
 	if(key == 108) { //tecla l
 		cubo->getFace(Directions::LEFT)->rotate(control_orientation);
 	} 
 	if(key == 102) { //tecla f
 		//cout << cubo->getFace(Directions::UP)->toString();
-		cubo->getFace(Directions::BACK)->rotate(!control_orientation);	
-		//cout << cubo->getFace(Directions::UP)->toString();
+		//cubo->getFace(Directions::BACK)->rotate(!control_orientation);	
+		cubo->getFace(Directions::FRONT)->rotate(control_orientation);	
 	} 
 	if(key == 100) { //tecla d
-		cubo->getFace(Directions::UP)->rotate(!control_orientation);
+		//cubo->getFace(Directions::UP)->rotate(!control_orientation);
+		cubo->getFace(Directions::DOWN)->rotate(control_orientation);
 	} 
 	if(key == 117) { //tecla u
-		cubo->getFace(Directions::DOWN)->rotate(!control_orientation);
+		//cubo->getFace(Directions::DOWN)->rotate(!control_orientation);
+		cubo->getFace(Directions::UP)->rotate(control_orientation);
 	} 
 	if(key == 114) { //tecla r
 		cubo->getFace(Directions::RIGHT)->rotate(control_orientation);
 	} 
 	if(key == 98) { //tecla b
-		cubo->getFace(Directions::FRONT)->rotate(control_orientation);
+		//cubo->getFace(Directions::FRONT)->rotate(control_orientation);
+		cubo->getFace(Directions::BACK)->rotate(control_orientation);
 	} 
 	if(key == 118) { //tecla v : visualização 3d ou 2d
 		control_3d = !control_3d;
 	} 
+
+	// Quantidade de movimentos 
+	if(key == 108 || key == 102 || key == 100 ||
+	   key == 117 || key == 114 || key == 98) {
+		cout << "Movimentos: "<<++num_movements<<endl;
+	}
+
 
 	glutPostRedisplay();
 }
@@ -375,7 +397,7 @@ int i = 0;
 void temporizador() {
 	i++;
 	if(i == 17) {
-		if(control_space > 0) {
+		if(control_space) {
 			if(position_x <= 30) {
 				position_x++;
 			} else {
