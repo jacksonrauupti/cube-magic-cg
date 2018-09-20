@@ -275,8 +275,10 @@ void funcaoDisplay() {
 	glPushMatrix();
 	if(!control_3d)
 		glTranslatef(0.0, cubo->getSize()*(-0.5), 0.0);
-	if(control_3d) 
-		glRotatef(-90, 1, 0, 0);
+	if(control_3d) { 
+		glTranslatef(0.0, 0.0, cubo->getSize()*(-0.5));
+		glRotatef(90, 1, 0, 0);
+	}
 	oneFace(cubo->getFace(Directions::DOWN));
 	glPopMatrix();
 
