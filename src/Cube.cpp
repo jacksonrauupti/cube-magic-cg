@@ -37,8 +37,8 @@ Cube::Cube(int size) {
 
 	back->setMatrix(up, Directions::UP, Directions::UP);
 	back->setMatrix(down, Directions::DOWN, Directions::DOWN);
-	back->setMatrix(right, Directions::LEFT, Directions::LEFT);
-	back->setMatrix(left, Directions::RIGHT, Directions::RIGHT);
+	back->setMatrix(right, Directions::LEFT, Directions::RIGHT);
+	back->setMatrix(left, Directions::RIGHT, Directions::LEFT);
 
 	this->faces[Directions::UP] = up;
 	this->faces[Directions::LEFT] = left;

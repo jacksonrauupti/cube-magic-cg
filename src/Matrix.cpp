@@ -103,13 +103,13 @@ int* Matrix::getEdge(Directions d) {
 	switch(d) {
 		case Directions::UP:
 			for (int i = 0; i < this->size; ++i) {
-				edge[i] = this->squares[0][i];
+				edge[i] = this->squares[this->size-1][i];
 			}
 			break;
 
 		case Directions::DOWN:
 			for (int i = 0; i < this->size; ++i) {
-				edge[i] = this->squares[this->size-1][i];
+				edge[i] = this->squares[0][i];
 			}
 			break;
 
@@ -135,13 +135,13 @@ void Matrix::setEdge(int* edge, Directions d, bool inverse) {
 	switch(d) {
 		case Directions::UP:
 			for (int i = 0; i < this->size; ++i) {
-				this->squares[0][i] = edge[inverse ? this->size - i - 1 : i];
+				this->squares[this->size-1][i] = edge[inverse ? this->size - i - 1 : i];
 			}
 			break;
 
 		case Directions::DOWN:
 			for (int i = 0; i < this->size; ++i) {
-				this->squares[this->size-1][i] = edge[inverse ? this->size - i - 1 : i];
+				this->squares[0][i] = edge[inverse ? this->size - i - 1 : i];
 			}
 			break;
 

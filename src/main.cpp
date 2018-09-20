@@ -376,7 +376,7 @@ void funcaoKeyboard(unsigned char key, int x, int y) {
 		cubo->getFace(Directions::RIGHT)->rotate(control_orientation);
 	} 
 	if(key == 98) { //tecla b
-		//cubo->getFace(Directions::FRONT)->rotate(control_orientation);
+		//cubo->getFace(Directions::FRONT)->rotate(!control_orientation);
 		cubo->getFace(Directions::BACK)->rotate(control_orientation);
 	} 
 	if(key == 118) { //tecla v : visualização 3d ou 2d
