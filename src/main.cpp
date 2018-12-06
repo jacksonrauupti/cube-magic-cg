@@ -24,7 +24,40 @@ bool control_space = true; //controlador da tecla space
 bool control_orientation = true; //sentido horario
 bool control_3d = false; //visualização do cubo 3d ou 2d.
 
+GLfloat LuzAmbient[] = {1.0, 1.0, 1.0, 1.0};
+GLfloat LuzDifusa[] = {0.8, 0.8, 0.8, 1.0};
+GLfloat PosicaoLuz[] = {30, 30, 0, 1.0};
+
+
 Cube* cubo = new Cube(3);
+
+
+// Função responsável pela especificação dos parâmetros de iluminação
+void DefineIluminacao ()
+{
+        GLfloat luzAmbiente[4]={0.2,0.2,0.2,1.0}; 
+        GLfloat luzDifusa[4]={0.7,0.7,0.7,1.0};          // "cor" 
+        GLfloat luzEspecular[4]={1.0, 1.0, 1.0, 1.0};// "brilho" 
+        GLfloat posicaoLuz[4]={0.0, 50.0, 50.0, 1.0};
+ 
+        // Capacidade de brilho do material
+        GLfloat especularidade[4]={1.0,1.0,1.0,1.0}; 
+        GLint especMaterial = 60;
+ 
+        // Define a refletância do material 
+        glMaterialfv(GL_FRONT,GL_SPECULAR, especularidade);
+        // Define a concentração do brilho
+        glMateriali(GL_FRONT,GL_SHININESS,especMaterial);
+ 
+        // Ativa o uso da luz ambiente 
+        glLightModelfv(GL_LIGHT_MODEL_AMBIENT, luzAmbiente);
+ 
+        // Define os parâmetros da luz de número 0
+        glLightfv(GL_LIGHT0, GL_AMBIENT, luzAmbiente); 
+        glLightfv(GL_LIGHT0, GL_DIFFUSE, luzDifusa );
+        glLightfv(GL_LIGHT0, GL_SPECULAR, luzEspecular );
+        glLightfv(GL_LIGHT0, GL_POSITION, posicaoLuz );   
+}
 
 float mat_color[5][5];
 
@@ -70,68 +103,8 @@ void getColor3f(int color, float* a, float* b, float* c) {
 
 }
 
-// Definir as 6 cores das faces do cubo.
-void oneCube(int f, int back, int l, int r, int u, int d) {
-	
-	float a, b, c;
-
-	getColor3f(3, &a, &b, &c);
-	glColor3f(a, b, c);
-	glBegin(GL_POLYGON);
-	glVertex3f(-0.500000, -0.500000, 0.500000);
-	glVertex3f(0.500000, -0.500000, 0.500000);
-	glVertex3f(0.500000, 0.500000, 0.500000);
-	glVertex3f(-0.500000, 0.500000, 0.500000);
-	glEnd();
-
-	getColor3f(3, &a, &b, &c);
-	glColor3f(a, b, c);
-	glBegin(GL_POLYGON);
-	glVertex3f(-0.500000, 0.500000, 0.500000);
-	glVertex3f(0.500000, 0.500000, 0.500000);
-	glVertex3f(0.500000, 0.500000, -0.500000);
-	glVertex3f(-0.500000, -0.500000, -0.500000);
-	glEnd();
-
-	getColor3f(1, &a, &b, &c);
-	glColor3f(a, b, c);
-	glBegin(GL_POLYGON);
-	glVertex3f(-0.500000, 0.500000, -0.500000);
-	glVertex3f(0.500000, 0.500000, -0.500000);
-	glVertex3f(0.500000, -0.500000, -0.500000);
-	glVertex3f(-0.500000, -0.500000, -0.500000);
-	glEnd();
-
-	getColor3f(1, &a, &b, &c);
-	glColor3f(a, b, c);
-	glBegin(GL_POLYGON);
-	glVertex3f(-0.500000, -0.500000, -0.500000);
-	glVertex3f(0.500000, -0.500000, -0.500000);
-	glVertex3f(0.500000, -0.500000, 0.500000);
-	glVertex3f(-0.500000, -0.500000, 0.500000);
-	glEnd();
-
-	getColor3f(1, &a, &b, &c);
-	glColor3f(a, b, c);
-	glBegin(GL_POLYGON);
-	glVertex3f(0.500000, -0.500000, 0.500000);
-	glVertex3f(0.500000, -0.500000, -0.500000);
-	glVertex3f(0.500000, 0.500000, -0.500000);
-	glVertex3f(0.500000, 0.500000, 0.500000);
-	glEnd();
-
-	getColor3f(1, &a, &b, &c);
-	glColor3f(a, b, c);
-	glBegin(GL_POLYGON);
-	glVertex3f(-0.500000, -0.500000,-0.500000);
-	glVertex3f(-0.500000, -0.500000, 0.500000);
-	glVertex3f(-0.500000, 0.500000, 0.500000);
-	glVertex3f(-0.500000, 0.500000, -0.500000);
-	glEnd();
-}
 
 void oneFace(Matrix* m) {
-//void oneFace() {
 	
 	float a, b, c;
 	glPushMatrix();
@@ -157,44 +130,43 @@ void oneFace(Matrix* m) {
 	glPopMatrix();
 }
 
-void nCubes(int dimension) {
-	glPushMatrix();	
-	
-	// Primeira camada.
-	oneCube(0,0,0,0,0,0);
-	glTranslatef(1.0,0.0,0.0);	
-	oneCube(0,0,0,0,0,0);	
-	glPopMatrix();
-
-	glTranslatef(0.0,0.0,1.0);
-	oneCube(0,0,0,0,0,0);	
-	glTranslatef(1.0,0.0,0.0);
-	oneCube(0,0,0,0,0,0);
-	glPopMatrix();	
-    
-	// Segunda camada. 
-	glTranslatef(0.0,1.0,0.0);	
-	oneCube(0,0,0,0,0,0);
-	
-	glTranslatef(-1.0,0.0,0.0);	
-	oneCube(0,0,0,0,0,0);	
-	glPopMatrix();
-
-	glTranslatef(0.0,0.0,-1.0);	
-	oneCube(0,0,0,0,0,0);	
-
-	glTranslatef(1.0,0.0, 0.0);	
-	oneCube(0,0,0,0,0,0);	
-	glPopMatrix();
-	
-}
 
 void inicializacao() {
 	//cor de fundo eh cinza
-	glClearColor(0.8, 0.8, 0.8, 0.8);
+	glClearColor(1.0f, 0.8f, 1.0f, 1.0f);
 	// set_color(); // definir cores dos cubos
 
+	glEnable(GL_COLOR_MATERIAL);
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
 	glEnable(GL_DEPTH_TEST);
+	//colorização de gourand
+	glShadeModel(GL_SMOOTH);
+
+	int angle = 50;
+	int rotx = 30;
+	int roty = 0;
+	int obsz = 180;
+	
+	//DefineIluminacao();
+	
+	/*
+	glEnable(GL_LIGHT1);
+	glEnable(GL_LIGHT2);
+	glEnable(GL_LIGHT3);
+	glEnable(GL_LIGHT4);
+	glEnable(GL_LIGHT5);
+	glEnable(GL_LIGHT6);
+	glEnable(GL_LIGHT7);*/
+
+	glLightfv(GL_LIGHT0, GL_AMBIENT, LuzAmbient);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, LuzDifusa);
+	glLightfv(GL_LIGHT0, GL_POSITION, PosicaoLuz);
+	glEnable(GL_LIGHT0);
+
+
+	//glLightModelfv(GL_LIGHT_MODEL_AMBIENT, LuzAmbient);
+	
 
 	glMatrixMode(GL_PROJECTION);
 	//alterne e altere as projecoes para alcancar os resultados desejados
@@ -245,14 +217,10 @@ void printProjection() {
 }
 
 void funcaoDisplay() {
-	//mensagem para verificar quando esta funcao eh chamada
-	// system("clear");
-	// printf("display\n");
-	// printModelView();
-	// printProjection();
-
+	
 	//limpa a tela com a cor de fundo
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -262,8 +230,7 @@ void funcaoDisplay() {
 	
 	glColor3f(0, 0, 0);
 	
-	//nCubes(2); // desenhar grid de cubos.
-	//oneCube(0,0,0,0,0,0);
+	// Criação do cubo
 
 	oneFace(cubo->getFace(Directions::LEFT));
 
