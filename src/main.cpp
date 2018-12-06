@@ -27,17 +27,23 @@ bool control_3d = false; //visualização do cubo 3d ou 2d.
 GLfloat LuzAmbient[] = {1.0, 1.0, 1.0, 1.0};
 GLfloat LuzDifusa[] = {0.8, 0.8, 0.8, 1.0};
 GLfloat PosicaoLuz[] = {30, 30, 0, 1.0};
+GLfloat especularidade[] = {1.0, 1.0, 1.0, 1.0};
+int especMaterial = 60;
 
 
 Cube* cubo = new Cube(3);
 
 
-// Função responsável pela especificação dos parâmetros de iluminação
-void DefineIluminacao ()
+void textura() {
+
+}
+
+
+void Iluminacao ()
 {
         GLfloat luzAmbiente[4]={0.2,0.2,0.2,1.0}; 
-        GLfloat luzDifusa[4]={0.7,0.7,0.7,1.0};          // "cor" 
-        GLfloat luzEspecular[4]={1.0, 1.0, 1.0, 1.0};// "brilho" 
+        GLfloat luzDifusa[4]={0.7,0.7,0.7,1.0};          
+        GLfloat luzEspecular[4]={1.0, 1.0, 1.0, 1.0};
         GLfloat posicaoLuz[4]={0.0, 50.0, 50.0, 1.0};
  
         // Capacidade de brilho do material
@@ -51,12 +57,60 @@ void DefineIluminacao ()
  
         // Ativa o uso da luz ambiente 
         glLightModelfv(GL_LIGHT_MODEL_AMBIENT, luzAmbiente);
+
+        glEnable(GL_LIGHT0);
+		glEnable(GL_LIGHTING);
+
+		glEnable(GL_COLOR_MATERIAL);
+		glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
  
         // Define os parâmetros da luz de número 0
         glLightfv(GL_LIGHT0, GL_AMBIENT, luzAmbiente); 
         glLightfv(GL_LIGHT0, GL_DIFFUSE, luzDifusa );
         glLightfv(GL_LIGHT0, GL_SPECULAR, luzEspecular );
         glLightfv(GL_LIGHT0, GL_POSITION, posicaoLuz );   
+
+        // Define os parâmetros da luz de número 0
+        glLightfv(GL_LIGHT1, GL_AMBIENT, luzAmbiente); 
+        glLightfv(GL_LIGHT1, GL_DIFFUSE, luzDifusa );
+        glLightfv(GL_LIGHT1, GL_SPECULAR, luzEspecular );
+        glLightfv(GL_LIGHT1, GL_POSITION, posicaoLuz );   
+
+        // Define os parâmetros da luz de número 0
+        glLightfv(GL_LIGHT2, GL_AMBIENT, luzAmbiente); 
+        glLightfv(GL_LIGHT2, GL_DIFFUSE, luzDifusa );
+        glLightfv(GL_LIGHT2, GL_SPECULAR, luzEspecular );
+        glLightfv(GL_LIGHT2, GL_POSITION, posicaoLuz );   
+
+        // Define os parâmetros da luz de número 0
+        glLightfv(GL_LIGHT3, GL_AMBIENT, luzAmbiente); 
+        glLightfv(GL_LIGHT3, GL_DIFFUSE, luzDifusa );
+        glLightfv(GL_LIGHT3, GL_SPECULAR, luzEspecular );
+        glLightfv(GL_LIGHT3, GL_POSITION, posicaoLuz );   
+
+        // Define os parâmetros da luz de número 0
+        glLightfv(GL_LIGHT4, GL_AMBIENT, luzAmbiente); 
+        glLightfv(GL_LIGHT4, GL_DIFFUSE, luzDifusa );
+        glLightfv(GL_LIGHT4, GL_SPECULAR, luzEspecular );
+        glLightfv(GL_LIGHT4, GL_POSITION, posicaoLuz );   
+
+        // Define os parâmetros da luz de número 5
+        glLightfv(GL_LIGHT5, GL_AMBIENT, luzAmbiente); 
+        glLightfv(GL_LIGHT5, GL_DIFFUSE, luzDifusa );
+        glLightfv(GL_LIGHT5, GL_SPECULAR, luzEspecular );
+        glLightfv(GL_LIGHT5, GL_POSITION, posicaoLuz );
+
+        // Define os parâmetros da luz de número 6
+        glLightfv(GL_LIGHT6, GL_AMBIENT, luzAmbiente); 
+        glLightfv(GL_LIGHT6, GL_DIFFUSE, luzDifusa );
+        glLightfv(GL_LIGHT6, GL_SPECULAR, luzEspecular );
+        glLightfv(GL_LIGHT6, GL_POSITION, posicaoLuz );
+
+        // Define os parâmetros da luz de número 0
+        glLightfv(GL_LIGHT7, GL_AMBIENT, luzAmbiente); 
+        glLightfv(GL_LIGHT7, GL_DIFFUSE, luzDifusa );
+        glLightfv(GL_LIGHT7, GL_SPECULAR, luzEspecular );
+        glLightfv(GL_LIGHT7, GL_POSITION, posicaoLuz );   
 }
 
 float mat_color[5][5];
@@ -136,19 +190,25 @@ void inicializacao() {
 	glClearColor(1.0f, 0.8f, 1.0f, 1.0f);
 	// set_color(); // definir cores dos cubos
 
-	glEnable(GL_COLOR_MATERIAL);
-	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);
+	
+	//glEnable(GL_COLOR_MATERIAL);
+	//glColorMaterial(GL_FRONT_AND_BACK, GL_DIFFUSE);
+	//glMaterialfv(GL_FRONT, GL_SPECULAR, especularidade);
+	//glMateriali(GL_FRONT, GL_SHININESS, especMaterial);
+	//glEnable(GL_LIGHTING);
+	//glEnable(GL_LIGHT0);
+	//glEnable(GL_LIGHT1);
 	glEnable(GL_DEPTH_TEST);
 	//colorização de gourand
 	glShadeModel(GL_SMOOTH);
-
+	
+	/*
 	int angle = 50;
 	int rotx = 30;
 	int roty = 0;
 	int obsz = 180;
-	
-	//DefineIluminacao();
+	*/
+	Iluminacao();
 	
 	/*
 	glEnable(GL_LIGHT1);
@@ -157,17 +217,21 @@ void inicializacao() {
 	glEnable(GL_LIGHT4);
 	glEnable(GL_LIGHT5);
 	glEnable(GL_LIGHT6);
-	glEnable(GL_LIGHT7);*/
+	glEnable(GL_LIGHT7);
 
 	glLightfv(GL_LIGHT0, GL_AMBIENT, LuzAmbient);
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, LuzDifusa);
 	glLightfv(GL_LIGHT0, GL_POSITION, PosicaoLuz);
 	glEnable(GL_LIGHT0);
 
+	glLightfv(GL_LIGHT1, GL_AMBIENT, LuzAmbient);
+	glLightfv(GL_LIGHT1, GL_DIFFUSE, LuzDifusa);
+	glLightfv(GL_LIGHT1, GL_POSITION, PosicaoLuz);
+	glEnable(GL_LIGHT1);
+	*/
 
 	//glLightModelfv(GL_LIGHT_MODEL_AMBIENT, LuzAmbient);
 	
-
 	glMatrixMode(GL_PROJECTION);
 	//alterne e altere as projecoes para alcancar os resultados desejados
 	gluPerspective( /* field of view in degree */ 40.0,
@@ -182,7 +246,10 @@ void inicializacao() {
 
    	glTranslatef(0, 0, 0);
    	glScalef(1.0, 1.0, 1);
-   	glutWireCube(1.0);
+   	//glutWireCube(1.0);
+   	glutSolidCube(1.0);
+
+
   	
 }
 
