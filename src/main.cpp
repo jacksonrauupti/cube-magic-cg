@@ -24,22 +24,69 @@ bool control_space = true; //controlador da tecla space
 bool control_orientation = true; //sentido horario
 bool control_3d = false; //visualização do cubo 3d ou 2d.
 
+/*
 GLfloat LuzAmbient[] = {1.0, 1.0, 1.0, 1.0};
 GLfloat LuzDifusa[] = {0.8, 0.8, 0.8, 1.0};
 GLfloat PosicaoLuz[] = {30, 30, 0, 1.0};
-GLfloat especularidade[] = {1.0, 1.0, 1.0, 1.0};
+GLfloat especularidade[] = {1.0, 1.0, 1.0, 1.0};*/
 int especMaterial = 60;
 
 
 Cube* cubo = new Cube(3);
 
+const char* filename;
+int width, height;
+GLuint texid1 = -777;
 
-void textura() {
 
+unsigned char * readPPM(const char* filename) {
+    FILE *arq = fopen(filename, "r");
+    char format[3];
+    int max;
+    unsigned char* pixels =NULL;
+    if(arq != NULL){
+        fscanf(arq, "%s %d %d %d\n", format, &width, &height, &max);
+        pixels= (unsigned char *) malloc(sizeof(unsigned char)*width*height*3);
+        fread(pixels, sizeof(unsigned char), width*height*3, arq);
+        fclose(arq);
+        printf("IMAGEM LIDA COM SUCESSO! PATH= %s",filename);
+        return pixels;
+    }
+    printf("IMAGEM NAO ENCONTRADA! PATH= %s",filename);
+    return NULL;
+}
+
+GLuint loadTextura(const char *c){
+    unsigned char *data = readPPM(c);
+    GLuint texid;
+    printf("ANTES %d",texid1);
+    glGenTextures(1, &texid);
+    glBindTexture(GL_TEXTURE_2D, texid);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+    
+    free(data);
+    return texid;
+}
+
+void activeTex(void){
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, texid1);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    printf("TEXTURA ATIVADA %d",texid1);
 }
 
 
-void Iluminacao ()
+void textura() {
+	
+    texid1 = loadTextura(filename);
+    printf("DEPOIS %d",texid1);
+    activeTex();
+}
+
+
+
+void iluminacao ()
 {
         GLfloat luzAmbiente[4] = {0.2,0.2,0.2,1.0}; 
         GLfloat luzDifusa[4] = {0.7,0.7,0.7,1.0};          
@@ -62,6 +109,7 @@ void Iluminacao ()
 		glEnable(GL_LIGHTING);
 
 		glEnable(GL_COLOR_MATERIAL);
+
 		glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
  
         glLightfv(GL_LIGHT0, GL_AMBIENT, luzAmbiente); 
@@ -120,48 +168,69 @@ void getColor3f(int color, float* a, float* b, float* c) {
 void oneFace(Matrix* m) {
 	
 	float a, b, c;
+
+	glPushAttrib(GL_LIGHTING_BIT);
+
 	glPushMatrix();
 	for (int i = 0; i < m->getSize(); ++i)
 	{
+
+		GLfloat teste[3] = {1,1,1};
+		activeTex();
+		glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE,teste);
+		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+
+		glPushAttrib(GL_LIGHTING_BIT);
+
 		glPushMatrix();
 		for (int j = 0; j < m->getSize(); ++j){
+			
+			
 			getColor3f(m->getSquares()[i][j], &a, &b, &c);
 			glColor3f(a, b, c);	
 			glBegin(GL_POLYGON);
-			glVertex3f(0.0, 0.0, 0.0);
-			glVertex3f(0.0, 0.5, 0.0);
-			glVertex3f(0.5, 0.5, 0.0);
-			glVertex3f(0.5, 0.0, 0.0);
+			glScalef(5,0,2.8);
+			glBegin(GL_QUADS);
+			
+			glTexCoord2f(0.0f, 0.0f);	glVertex3f(0.0, 0.0, 0.0);
+			
+
+			glTexCoord2f(0.0f, 1.0f);	glVertex3f(0.0, 0.5, 0.0);
+
+			glTexCoord2f(1.0f, 1.0f);	glVertex3f(0.5, 0.5, 0.0);
+
+			glTexCoord2f(1.0f, 0.0f);	glVertex3f(0.5, 0.0, 0.0);
 			glEnd();
 
 			glTranslatef(0.5, 0.0, 0.0);
 		}
 		glPopMatrix();
+		glBindTexture( GL_TEXTURE_2D, 0 );
 		glTranslatef(0.0, 0.5, 0.0);
+		glPopAttrib();
 
 	}
 	glPopMatrix();
+	glBindTexture( GL_TEXTURE_2D, 0 );
+	glPopAttrib();
+	
+
 }
 
 
 void inicializacao() {
 	//cor de fundo eh cinza
-	glClearColor(1.0f, 0.8f, 1.0f, 1.0f);
+	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	// set_color(); // definir cores dos cubos
 
-	
-	//glEnable(GL_COLOR_MATERIAL);
-	//glColorMaterial(GL_FRONT_AND_BACK, GL_DIFFUSE);
-	//glMaterialfv(GL_FRONT, GL_SPECULAR, especularidade);
-	//glMateriali(GL_FRONT, GL_SHININESS, especMaterial);
-	//glEnable(GL_LIGHTING);
-	//glEnable(GL_LIGHT0);
-	//glEnable(GL_LIGHT1);
-
+	glShadeModel(GL_FLAT);
 	glEnable(GL_DEPTH_TEST);
 	//colorização de gourand
 	glShadeModel(GL_SMOOTH);
 	
+
+	//filename = "imgs/texture1.ppm";
+	filename = "imgs/prog05.ppm";
 
 	//glLightModelfv(GL_LIGHT_MODEL_AMBIENT, LuzAmbient);
 	
@@ -176,16 +245,17 @@ void inicializacao() {
 		0.0, 0.0, 0.0,      /* center is at (0,0,0) */
 		0.0, 1.0, 0.);      /* up is in positive Y direction */
 
-	Iluminacao();
+	textura();
 
+	//TODO: iluminação
+	iluminacao();
+	
 	glPushMatrix();
 
    	glTranslatef(0, 0, 0);
    	glScalef(1.0, 1.0, 1);
    	//glutWireCube(1.0);
    	glutSolidCube(1.0);
-
-
   	
 }
 
@@ -231,9 +301,12 @@ void funcaoDisplay() {
 	//altere gluLookAt para movimentar a camera ao redor do cubo.
 	//gluLookAt( cos(theta)*10, 3, sin(theta)*10, 0.0, 0.0, 0.0, 0, 1, 0);
 	gluLookAt( position_x, position_y, position_z, 0.0, 0.0, 0.0, 0, 1, 0);
-	
 
-	Iluminacao();
+	//TODO: textura
+	textura();
+
+	//TODO: iluminação
+	iluminacao();
 	
 	glColor3f(0, 0, 0);
 	
@@ -273,7 +346,7 @@ void funcaoDisplay() {
 		glRotatef(90, 0, 1, 0);
 	oneFace(cubo->getFace(Directions::BACK));
 
-	//glutSolidSphere(0.5, 32, 32);
+	//glutSolidSphere(1.0, 32, 32);
 
 	glutSwapBuffers();
 
