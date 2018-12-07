@@ -15,22 +15,16 @@ using std::string;
 using std::cout;
 using std::endl;
 
-int position_x = 0;
+int position_x = -5;
 int position_y = -5;
 int position_z = 5;
 int num_movements = 0; //número de movimentos
 float theta;
-bool control_space = true; //controlador da tecla space
+bool control_space = false; //controlador da tecla space
 bool control_orientation = true; //sentido horario
 bool control_3d = false; //visualização do cubo 3d ou 2d.
 
-/*
-GLfloat LuzAmbient[] = {1.0, 1.0, 1.0, 1.0};
-GLfloat LuzDifusa[] = {0.8, 0.8, 0.8, 1.0};
-GLfloat PosicaoLuz[] = {30, 30, 0, 1.0};
-GLfloat especularidade[] = {1.0, 1.0, 1.0, 1.0};*/
 int especMaterial = 60;
-
 
 Cube* cubo = new Cube(3);
 
@@ -49,17 +43,17 @@ unsigned char * readPPM(const char* filename) {
         pixels= (unsigned char *) malloc(sizeof(unsigned char)*width*height*3);
         fread(pixels, sizeof(unsigned char), width*height*3, arq);
         fclose(arq);
-        printf("IMAGEM LIDA COM SUCESSO! PATH= %s",filename);
+        //printf("sucess ! path= %s",filename);
         return pixels;
     }
-    printf("IMAGEM NAO ENCONTRADA! PATH= %s",filename);
+    //printf("error! path= %s",filename);
     return NULL;
 }
 
 GLuint loadTextura(const char *c){
     unsigned char *data = readPPM(c);
     GLuint texid;
-    printf("ANTES %d",texid1);
+    //printf("before %d",texid1);
     glGenTextures(1, &texid);
     glBindTexture(GL_TEXTURE_2D, texid);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
@@ -73,14 +67,14 @@ void activeTex(void){
     glBindTexture(GL_TEXTURE_2D, texid1);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    printf("TEXTURA ATIVADA %d",texid1);
+    //printf("activate %d",texid1);
 }
 
 
-void textura() {
-	
+void textura(const char *filename) {
+
     texid1 = loadTextura(filename);
-    printf("DEPOIS %d",texid1);
+    //printf("after %d",texid1);
     activeTex();
 }
 
@@ -115,10 +109,9 @@ void iluminacao ()
         glLightfv(GL_LIGHT0, GL_AMBIENT, luzAmbiente); 
         glLightfv(GL_LIGHT0, GL_DIFFUSE, luzDifusa );
         glLightfv(GL_LIGHT0, GL_SPECULAR, luzEspecular );
-        glLightfv(GL_LIGHT0, GL_POSITION, posicaoLuz );   
-
-        
+        glLightfv(GL_LIGHT0, GL_POSITION, posicaoLuz );    
 }
+
 
 float mat_color[5][5];
 
@@ -220,19 +213,13 @@ void oneFace(Matrix* m) {
 
 void inicializacao() {
 	//cor de fundo eh cinza
-	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+	glClearColor(0.2f, 0.2f, 0.2f, 0.2f);
 	// set_color(); // definir cores dos cubos
 
 	glShadeModel(GL_FLAT);
 	glEnable(GL_DEPTH_TEST);
 	//colorização de gourand
 	glShadeModel(GL_SMOOTH);
-	
-
-	//filename = "imgs/texture1.ppm";
-	filename = "imgs/prog05.ppm";
-
-	//glLightModelfv(GL_LIGHT_MODEL_AMBIENT, LuzAmbient);
 	
 	glMatrixMode(GL_PROJECTION);
 	//alterne e altere as projecoes para alcancar os resultados desejados
@@ -245,9 +232,7 @@ void inicializacao() {
 		0.0, 0.0, 0.0,      /* center is at (0,0,0) */
 		0.0, 1.0, 0.);      /* up is in positive Y direction */
 
-	textura();
 
-	//TODO: iluminação
 	iluminacao();
 	
 	glPushMatrix();
@@ -299,14 +284,12 @@ void funcaoDisplay() {
 	glLoadIdentity();
 
 	//altere gluLookAt para movimentar a camera ao redor do cubo.
-	//gluLookAt( cos(theta)*10, 3, sin(theta)*10, 0.0, 0.0, 0.0, 0, 1, 0);
 	gluLookAt( position_x, position_y, position_z, 0.0, 0.0, 0.0, 0, 1, 0);
 
-	//TODO: textura
-	textura();
-
-	//TODO: iluminação
+	
 	iluminacao();
+
+	textura("imgs/laranja.ppm");
 	
 	glColor3f(0, 0, 0);
 	
@@ -314,10 +297,14 @@ void funcaoDisplay() {
 
 	oneFace(cubo->getFace(Directions::LEFT));
 
+	textura("imgs/verde.ppm");
+
 	glTranslatef(cubo->getSize()*0.5, 0.0, 0.0);
 	if(control_3d) 
 		glRotatef(90, 0, 1, 0);
 	oneFace(cubo->getFace(Directions::FRONT));
+
+	textura("imgs/azul.ppm");
 
 	glPushMatrix();
 	if(!control_3d)
@@ -329,6 +316,8 @@ void funcaoDisplay() {
 	oneFace(cubo->getFace(Directions::DOWN));
 	glPopMatrix();
 
+	textura("imgs/branca.ppm");
+
 	glPushMatrix();
 	glTranslatef(0.0, cubo->getSize()*0.5, 0.0);
 	if(control_3d) 
@@ -336,10 +325,14 @@ void funcaoDisplay() {
 	oneFace(cubo->getFace(Directions::UP));
 	glPopMatrix();
 
+	textura("imgs/vermelha.ppm");
+
 	glTranslatef(cubo->getSize()*0.5, 0.0, 0.0);
 	if(control_3d) 
 		glRotatef(90, 0, 1, 0);
 	oneFace(cubo->getFace(Directions::RIGHT));
+
+	textura("imgs/amarela.ppm");
 
 	glTranslatef(cubo->getSize()*0.5, 0.0, 0.0);
 	if(control_3d) 	
